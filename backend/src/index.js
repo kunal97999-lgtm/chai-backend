@@ -4,7 +4,7 @@ import connectDB from "./db/index.js";
 import { app } from "./app.js"; // 1. Import your configured app from app.js instead of express
 
 dotenv.config({
-    path: './.env' // Note: Double check if your file is named '.env', it should have a dot: './.env'
+    path: './.env' 
 })
 
 // 2. REMOVED: const app = express() is gone from here!

@@ -34,7 +34,6 @@ const registerUser = asyncHandler( async (req,res) =>{ // we usee async handler 
     // return res
 
     const {fullName,email,username, password}=req.body //getting data
-    console.log("email",email);
     
     if(
         [fullName,email,username,password] // this creates an array
@@ -107,9 +106,7 @@ const loginUser = asyncHandler(async (req,res)=> {
         throw new ApiError(400,"Username or emial required");
 
     }
-    console.log(req.body);
-    console.log(email);
-    console.log(username);
+    
     const user = await User.findOne({
         $or: [{username},{email}]
     })
@@ -402,7 +399,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
         {
             $match:{
                 _id: new mongoose.Types.ObjectId(req.user._id)
-            }
+            }//MongoDB _id is normally an ObjectId, not a normal JavaScript string.
         },
         {
             $lookup:{

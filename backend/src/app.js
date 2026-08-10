@@ -11,7 +11,7 @@ app.use(cors({
 app.use(express.json({limit: "16kb"}))
 app.use(express.urlencoded({extended:true,limit:"16kb"})) // yeh tab use krte hai jab kuch search kra or usme bich me + % use ho rhe hai
 app.use(express.static("public")) // pdf ya image aai toh store krne ke liye
-app.use(cookieParser())
+app.use(cookieParser()) 
 
 // routes import
 import userRouter from './routes/user.routes.js'
