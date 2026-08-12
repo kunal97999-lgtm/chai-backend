@@ -62,8 +62,11 @@ const registerUser = asyncHandler( async (req,res) =>{ // we usee async handler 
         throw new ApiError(400,"Avatar file is required")
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath) // after uploading it to cloudinary
-    // it didn't just return url , it will return an object (large) 
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    if (!avatar?.url) {
+        throw new ApiError(400, "Error uploading avatar file to Cloudinary")
+    }
+
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
      
@@ -127,7 +130,7 @@ const loginUser = asyncHandler(async (req,res)=> {
      
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
     }
 
     return res.status(200).cookie("accessToken",accessToken,options).cookie("refreshToken",refreshToken,options).json(
@@ -146,8 +149,8 @@ const logoutUser = asyncHandler(async(req,res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set :{
-                refreshToken: undefined
+            $unset :{
+                refreshToken: 1
             }
 
         },
@@ -157,7 +160,7 @@ const logoutUser = asyncHandler(async(req,res) => {
     )
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
     }
 
     return res.status(200).clearCookie("accessToken",options)
@@ -194,7 +197,7 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
     
         const options ={
             httpOnly: true,
-            secure: true 
+            secure: process.env.NODE_ENV === "production",
         }
         const {accessToken,refreshToken} =await generateAccessAndRefreshTokens(user._id)
     
